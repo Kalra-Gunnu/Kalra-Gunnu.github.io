@@ -67,28 +67,15 @@ APP.Main = (function() {
    */
   function onStoryData (key, details) {
 
-    // This seems odd. Surely we could just select the story
-    // directly rather than looping through all of them.
-    var storyElements = document.getElementsByClassName('story');
-    var len = storyElements.length;
-    
-    
-    for (var i = 0; i < len; i++) {
+    var story = document.querySelector('.story#s-' + key);
+    details.time *= 1000;
+    var html = storyTemplate(details);
+    story.innerHTML = html;
+    story.addEventListener('click', onStoryClick.bind(this, details));
+    story.classList.add('clickable');
 
-      if (storyElements[i].getAttribute('id') === 's-' + key) {
-
-        details.time *= 1000;
-        var story = storyElements[i];
-        var html = storyTemplate(details);
-        story.innerHTML = html;
-        story.addEventListener('click', onStoryClick.bind(this, details));
-        story.classList.add('clickable');
-
-        // Tick down. When zero we can batch in the next load.
-        storyLoadCount--;
-
-      }
-    }
+    // Tick down. When zero we can batch in the next load.
+    storyLoadCount--;
   }
 
   function onStoryClick(details) {
@@ -108,12 +95,12 @@ APP.Main = (function() {
 
     storyDetails.setAttribute('id', 'sd-' + details.id);
     storyDetails.innerHTML = storyDetailsHtml;
-    
-    commentsElement = storyDetails.getElementsByClassName('js-comments');
-    storyHeader = storyDetails.getElementsByClassName('js-header');
-    storyContent = storyDetails.getElementsByClassName('js-content');
 
-    var closeButton = storyDetails.getElementsByClassName('js-close');
+    commentsElement = storyDetails.querySelector('.js-comments');
+    storyHeader = storyDetails.querySelector('.js-header');
+    storyContent = storyDetails.querySelector('.js-content');
+
+    var closeButton = storyDetails.querySelector('.js-close');
     closeButton.addEventListener('click', hideStory.bind(this, details.id));
 
     var headerHeight = storyHeader.getBoundingClientRect().height;
@@ -161,11 +148,12 @@ APP.Main = (function() {
 
   main.addEventListener('scroll', function() {
     var header = $('header');
-    var headerTitles = header.getElementsByClassName('header__title-wrapper');
+    var headerTitles = header.querySelector('.header__title-wrapper');
     var scrollTopCapped = Math.min(70, main.scrollTop);
     var scaleString = 'scale(' + (1 - (scrollTopCapped / 300)) + ')';
 
     header.style.height = (156 - scrollTopCapped) + 'px';
+    headerTitles.style.webkitTransform = scaleString;
     headerTitles.style.transform = scaleString;
 
     // Add a shadow to the header.
@@ -178,7 +166,7 @@ APP.Main = (function() {
     var loadThreshold = (main.scrollHeight - main.offsetHeight -
         LAZY_LOAD_THRESHOLD);
     if (main.scrollTop > loadThreshold)
-        requestAnimationFrame(loadStoryBatch);
+      requestAnimationFrame(loadStoryBatch);
   });
 
   function loadStoryBatch() {

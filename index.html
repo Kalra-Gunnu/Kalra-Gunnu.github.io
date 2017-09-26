@@ -1,72 +1,96 @@
-<!DOCTYPE html>
-<html lang="en">
+<!--
+
+Copyright 2015 Google Inc. All rights reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+-->
+<!doctype html>
+<html>
+
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content=" FILL ME IN ">
-    <meta name="author" content=" FILL ME IN ">
-    <title>Cameron Pittman: Portfolio</title>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width">
+  <meta name="theme-color" content="#FF6F00">
 
-    <!-- Hmm, what is the impact of web fonts on speed? Measure it... -->
-    <link href="//fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet">
+  <script src="third_party/handlebars-v3.0.0.js"></script>
+  <script>
+  if (typeof window.Intl !== 'undefined') {
+    document.write('<script src="third_party/handlebars-intl.min.js"><\/script>');
+  }
+  </script>
 
-    <link href="css/style.css" rel="stylesheet">
-    <link href="css/print.css" rel="stylesheet">
+  <script id="tmpl-story" type="text/x-handlebars-template">
+    <h1 class="story__title">{{ title }}</h1>
+    <div class="story__score">{{ score }}</div>
+    <div class="story__by">Posted by {{ by }}{{#if time }}, {{ formatRelative time }}{{/if }}
+    </div>
+  </script>
 
-    <script>
-      (function(w,g){w['GoogleAnalyticsObject']=g;
-      w[g]=w[g]||function(){(w[g].q=w[g].q||[]).push(arguments)};w[g].l=1*new Date();})(window,'ga');
+  <script id="tmpl-story-details" type="text/x-handlebars-template">
+    <header class="story-details__header js-header">
+      <h1 class="story-details__title">{{ title }}{{#if url }} <a class="story-details__title-link" href="{{url}}">({{ urlobj.hostname }})</a>{{/if}}</h1>
+      <button class="story-details__close js-close">Close</button>
+      <section class="story-details__meta">
+        Posted by {{ by }}{{#if time }}, {{ formatRelative time }}{{/if }}
+      </section>
+    </header>
 
-      // Optional TODO: replace with your Google Analytics profile ID.
-      ga('create', 'UA-XXXX-Y');
-      ga('send', 'pageview');
-    </script>
-    <script src="http://www.google-analytics.com/analytics.js"></script>
-    <script async src="js/perfmatters.js"></script>
+    <section class="story-details__content js-content">
+      <div>
+        <a class="story-details__link" href="{{ url }}">Visit site</a>
+      </div>
+
+      {{#if kids}}
+      <section class="story-details__comments js-comments">
+        <h2 class="story-details__comments-title">Comments</h2>
+      </section>
+      {{/if}}
+    </section>
+  </script>
+
+  <script id="tmpl-story-details-comment" type="text/x-handlebars-template">
+    <p class="story-details-comment__author">{{ by }}{{#if time }}, {{ formatRelative time }}{{/if }}</p>
+    <div class="story-details-comment__text">{{{ text }}}</div>
+  </script>
+
+  <link href='http://fonts.googleapis.com/css?family=Roboto:400,500,700' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="styles/app.css">
+
   </head>
 
   <body>
-    <header>
-      <a href="/"><img src="img/profilepic.jpg"></a>
-      <p>Cameron Pittman<br><span>Course Developer</span></p>
+
+    <header class="header">
+
+      <div class="header__title-wrapper">
+        <h1 class="header__title">Hacker News</h1>
+        <h2 class="header__subhead">Top Stories</h2>
+      </div>
+
     </header>
 
-    <div class="container">
-      <div class="hero">
-        <strong>I love web development!</strong> This is a template for a simple portfolio. I decided to use it to showcase a few Udacity courses I've taken and some teaching work, but you can use it to showcase any kind of project that you want the world to see :) <br> Contact me: me@email.com
-      </div>
+    <main class="loading">
+    </main>
 
-      <div class="content">
-        <ul>
-          <li>
-            <img src="https://lh4.ggpht.com/kJEnfqhPvtm4m3EneSZ4fWYGS8lW4YNhEjk6zPkyrQaBUHc-2Y_ElDic99NHI0h-UBLXVbRCjFybFvrWxdk=s100">
-            <a href="project-2048.html">Build Your Own 2048!</a>
-            <p>I made my own version of 2048. How cool is that!?</p>
-          </li>
+    <footer>
+      Powered by the <a href="https://github.com/HackerNews/API">Hacker News API</a>
+    </footer>
 
-          <li>
-            <img src="https://lh6.ggpht.com/f_0W8h__3G99CWTjnMjD8BUKm7yp2-wJyApLtTwFoFtlal2ULf_JgHIsOQq2NiYfKOdMlXlMHDKNo5XVZLs=s100">
-            <a href="project-webperf.html">Website Performance Optimization</a>
-            <p>Hey... this class looks familiar.</p>
-          </li>
+    <script src="scripts/namespace.js"></script>
+    <script src="scripts/data.js"></script>
+    <script src="scripts/app.js"></script>
 
-          <li>
-            <img src="https://lh5.ggpht.com/IKdCmTWn8a2nMhlwMYzryvzRN5CUZAOBr4tDrEAbszV7TIFe9pRAInA4kkYcgTXwrifJsBEsq1agTueuu-g=s100">
-            <a href="project-mobile.html">Mobile Web Development</a>
-            <p>Making mobile apps isn't so hard after all.</p>
-          </li>
-
-          <li>
-            <img style="width: 100px;" src="views/images/pizzeria.jpg">
-            <a href="views/pizza.html">Cam's Pizzeria</a>
-            <p>Who wants a performant pizza?</p>
-          </li>
-        </ul>
-      </div>
-
-      <footer>
-        <p>&copy; Web Performance 2014 <span id="crp-stats"></span></p>
-      </footer>
-    </div>
   </body>
 </html>

@@ -65,7 +65,7 @@ APP.Main = (function() {
 
     // This seems odd. Surely we could just select the story
     // directly rather than looping through all of them.
-    var storyElements = document.selectByClassName('story');
+    var storyElements = document.getElementsByClassName('story');
     var len = storyElements.length;
     var story = [];
     var html = storyTemplate(details);
@@ -126,11 +126,11 @@ APP.Main = (function() {
 
       document.body.appendChild(storyDetails);
 
-      commentsElement = storyDetails.selectByClassName('js-comments');
-      storyHeader = storyDetails.selectByClassName('js-header');
-      storyContent = storyDetails.selectByClassName('js-content');
+      commentsElement = storyDetails.getElementsByClassName('js-comments');
+      storyHeader = storyDetails.getElementsByClassName('js-header');
+      storyContent = storyDetails.getElementsByClassName('js-content');
 
-      var closeButton = storyDetails.selectByClassName('js-close');
+      var closeButton = storyDetails.getElementsByClassName('js-close');
       closeButton.addEventListener('click', hideStory.bind(this, details.id));
 
       var headerHeight = storyHeader.getBoundingClientRect().height;
@@ -267,8 +267,8 @@ APP.Main = (function() {
     for (var s = 0; s < len; s++) {
 
       story[s] = storyElements[s];
-      var score = story.selectByClassName('story__score');
-      var title = story.selectByClassName('story__title');
+      var score = story.getElementsByClassName('story__score');
+      var title = story.getElementsByClassName('story__title');
 
       // Base the scale on the y position of the score.
       
@@ -303,7 +303,7 @@ APP.Main = (function() {
   main.addEventListener('scroll', function() {
 
     var header = $('header');
-    var headerTitles = header.selectByClassName('header__title-wrapper');
+    var headerTitles = header.getElementsByClassName('header__title-wrapper');
     var scrollTopCapped = Math.min(70, main.scrollTop);
     var scaleString = 'scale(' + (1 - (scrollTopCapped / 300)) + ')';
 

@@ -48,6 +48,10 @@ APP.Main = (function() {
     tmplStoryDetailsComment = tmplStoryDetailsComment.replace(intlRelative, '');
   }
 
+  var storyDetails = document.createElement('section');
+  storyDetails.classList.add('story-details');
+  document.body.appendChild(storyDetails);
+
   var storyTemplate =
       Handlebars.compile(tmplStory);
   var storyDetailsTemplate =
@@ -68,14 +72,14 @@ APP.Main = (function() {
     var storyElements = document.getElementsByClassName('story');
     var len = storyElements.length;
     
-    var html = storyTemplate(details);
+    
     for (var i = 0; i < len; i++) {
 
       if (storyElements[i].getAttribute('id') === 's-' + key) {
 
         details.time *= 1000;
         var story = storyElements[i];
-        
+        var html = storyTemplate(details);
         story.innerHTML = html;
         story.addEventListener('click', onStoryClick.bind(this, details));
         story.classList.add('clickable');

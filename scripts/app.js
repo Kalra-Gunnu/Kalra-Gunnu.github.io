@@ -67,14 +67,14 @@ APP.Main = (function() {
     // directly rather than looping through all of them.
     var storyElements = document.getElementsByClassName('story');
     var len = storyElements.length;
-    var story = [];
+    
     var html = storyTemplate(details);
     for (var i = 0; i < len; i++) {
 
       if (storyElements[i].getAttribute('id') === 's-' + key) {
 
         details.time *= 1000;
-        story[i] = storyElements[i];
+        var story = storyElements[i];
         
         story.innerHTML = html;
         story.addEventListener('click', onStoryClick.bind(this, details));

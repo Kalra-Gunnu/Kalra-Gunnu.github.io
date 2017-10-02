@@ -256,6 +256,7 @@
 						var radius = 50;
 
 						function getStreetView(data, status) {
+							console.log(status);
 							if(status == google.maps.StreetViewStatus.OK) {
 								var nearStreetViewLocation = data.location.latLng;
 								var heading = google.maps.geometry.spherical.computeHeading(nearStreetViewLocation, marker.position);

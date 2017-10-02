@@ -1,96 +1,306 @@
-<!--
-
-Copyright 2015 Google Inc. All rights reserved.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-
--->
 <!doctype html>
 <html>
+	<head>
+		<meta charset="utf-8">
+		<style>
+			html,
+			body {
+				font-family: Arial, sans-serif;
+				height: 100%;
+				margin: 0;
+				padding: 0;
+			}
+			
+			#map {
+				bottom: 0;
+				height: 100%;
+				left: 362px;
+				position: absolute;
+				right: 0;
+			}
 
-  <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <meta name="viewport" content="width=device-width">
-  <meta name="theme-color" content="#FF6F00">
+			.options-box {
+				background: #fff;
+				border: 1px solid #999;
+				border-radius: 3px;
+				height: 100%;
+				line-height: 35px;
+				padding: 10px 10px 30px 10px;
+				text-align: left;
+				width: 340px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class = "container">
+			<div class = "options-box">
+				<h1>Find places</h1>
+				<div>
+					<input id="show-listings" type = "button" value = "Show Listings">
+					<input id="hide-listings" type = "button" value = "Hide Listings">
+				</div>
+			</div>
+			<div id="map"></div>
+		</div>
+		<script>
+			var map;
 
-  
+			var markers = [];
 
-  <link href='https://fonts.googleapis.com/css?family=Roboto:400,500,700' rel='stylesheet' type='text/css'>
-  <link rel="stylesheet" href="styles/app.css">
+			function initMap() {
 
-  </head>
+				/*var styles = [
+				    {
+				        "elementType": "geometry",
+				        "stylers": [
+				            {
+				                "hue": "#ff4400"
+				            },
+				            {
+				                "saturation": -68
+				            },
+				            {
+				                "lightness": -4
+				            },
+				            {
+				                "gamma": 0.72
+				            }
+				        ]
+				    },
+				    {
+				        "featureType": "road",
+				        "elementType": "labels.icon"
+				    },
+				    {
+				        "featureType": "landscape.man_made",
+				        "elementType": "geometry",
+				        "stylers": [
+				            {
+				                "hue": "#0077ff"
+				            },
+				            {
+				                "gamma": 3.1
+				            }
+				        ]
+				    },
+				    {
+				        "featureType": "water",
+				        "stylers": [
+				            {
+				                "hue": "#00ccff"
+				            },
+				            {
+				                "gamma": 0.44
+				            },
+				            {
+				                "saturation": -33
+				            }
+				        ]
+				    },
+				    {
+				        "featureType": "poi.park",
+				        "stylers": [
+				            {
+				                "hue": "#44ff00"
+				            },
+				            {
+				                "saturation": -23
+				            }
+				        ]
+				    },
+				    {
+				        "featureType": "water",
+				        "elementType": "labels.text.fill",
+				        "stylers": [
+				            {
+				                "hue": "#007fff"
+				            },
+				            {
+				                "gamma": 0.77
+				            },
+				            {
+				                "saturation": 65
+				            },
+				            {
+				                "lightness": 99
+				            }
+				        ]
+				    },
+				    {
+				        "featureType": "water",
+				        "elementType": "labels.text.stroke",
+				        "stylers": [
+				            {
+				                "gamma": 0.11
+				            },
+				            {
+				                "weight": 5.6
+				            },
+				            {
+				                "saturation": 99
+				            },
+				            {
+				                "hue": "#0091ff"
+				            },
+				            {
+				                "lightness": -86
+				            }
+				        ]
+				    },
+				    {
+				        "featureType": "transit.line",
+				        "elementType": "geometry",
+				        "stylers": [
+				            {
+				                "lightness": -48
+				            },
+				            {
+				                "hue": "#ff5e00"
+				            },
+				            {
+				                "gamma": 1.2
+				            },
+				            {
+				                "saturation": -23
+				            }
+				        ]
+				    },
+				    {
+				        "featureType": "transit",
+				        "elementType": "labels.text.stroke",
+				        "stylers": [
+				            {
+				                "saturation": -64
+				            },
+				            {
+				                "hue": "#ff9100"
+				            },
+				            {
+				                "lightness": 16
+				            },
+				            {
+				                "gamma": 0.47
+				            },
+				            {
+				                "weight": 2.7
+				            }
+				        ]
+				    }
+				]*/
 
-  <body>
+				map = new google.maps.Map(document.getElementById('map'), {
+					center: {lat: 40.7413549, lng: -73.9980244},
+					zoom: 13,
+					//styles: styles
+				});
 
-    <header class="header">
+				var defaultIcon = makeMarkerIcon('fe7569');
 
-      <div class="header__title-wrapper">
-        <h1 class="header__title">Hacker News</h1>
-        <h2 class="header__subhead">Top Stories</h2>
-      </div>
+				var highlightedIcon = makeMarkerIcon('ffff24');
 
-    </header>
+				function makeMarkerIcon(color) {
+					var markerImage = new google.maps.MarkerImage('http://chart.googleapis.com/chart?chst=d_map_spin&chld=1.15|0|' + color + '|40|_|%E2%80%A2',
+						new google.maps.Size(21,34),
+						new google.maps.Point(0,0),
+						new google.maps.Point(10,34),
+						new google.maps.Size(21,34));
+					return markerImage;
+				};
+				
+				var locations = [
+				{title: 'Park Ave Penthouse', location: {lat: 40.7713024, lng: -73.9632393}},
+				{title: 'Chelsea Loft', location: {lat: 40.7444883, lng: -73.9949465}},
+				{title: 'Union Square Open Floor Plan', location: {lat: 40.7347062, lng: -73.9895759}},
+				{title: 'East Village Hip Studio', location: {lat: 40.7281777, lng: -73.984377}},
+				{title: 'TriBeCa Artsy Bachelor Pad', location: {lat: 40.7195264, lng: -74.0089934}},
+				{title: 'Chinatown Homey Space', location: {lat: 40.7180628, lng: -73.9961237}}
+				];
 
-    <main class="loading">
-    </main>
+				var largeInfowindow = new google.maps.InfoWindow();
+				
+				locations.forEach(function(loc, index){
+					var position = loc.location;
+					var title = loc.title;
+					var marker = new google.maps.Marker({
+						map: map,
+						position: position,
+						title: title,
+						icon: defaultIcon,
+						animation: google.maps.Animation.DROP,
+						id: index
+					});
+					
+					markers.push(marker);
+					
+					marker.addListener('click', function(){
+						populateInfoWindow(this, largeInfowindow);
+					});
+					
+					marker.addListener('mouseover',function() {
+						this.setIcon(highlightedIcon);
+					});
 
-    <footer>
-      Powered by the <a href="https://github.com/HackerNews/API">Hacker News API</a>
-    </footer>
-    <script src="third_party/handlebars-v3.0.0.js"></script>
-    <script>
-    if (typeof window.Intl !== 'undefined') {
-      document.write('<script src="third_party/handlebars-intl.min.js"><\/script>');
-    }
-    </script>
+					marker.addListener('mouseout',function() {
+						this.setIcon(defaultIcon);
+					});
+				});
 
-    <script id="tmpl-story" type="text/x-handlebars-template">
-      <h1 class="story__title">{{ title }}</h1>
-      <div class="story__score">{{ score }}</div>
-      <div class="story__by">Posted by {{ by }}{{#if time }}, {{ formatRelative time }}{{/if }}
-      </div>
-    </script>
+				function populateInfoWindow(marker, infowindow) {
+					if(infowindow.marker != marker) {
+						infowindow.marker = marker;
+						infowindow.setContent('');
+						infowindow.addListener('closeClick', function() {
+							infowindow.marker(null);
+						});
+						var streetViewService = new google.maps.StreetViewService();
+						var radius = 50;
 
-    <script id="tmpl-story-details" type="text/x-handlebars-template">
-      <header class="story-details__header js-header">
-        <h1 class="story-details__title">{{ title }}{{#if url }} <a class="story-details__title-link" href="{{url}}">({{ urlobj.hostname }})</a>{{/if}}</h1>
-        <button class="story-details__close js-close">Close</button>
-        <section class="story-details__meta">
-          Posted by {{ by }}{{#if time }}, {{ formatRelative time }}{{/if }}
-        </section>
-      </header>
+						function getStreetView(data, status) {
+							if(status == google.maps.StreetViewStatus.OK) {
+								var nearStreetViewLocation = data.location.latLng;
+								var heading = google.maps.geometry.spherical.computeHeading(nearStreetViewLocation, marker.position);
+								infowindow.setContent('<div>' + marker.title + '</div><div id="pano"></div>');
+								console.log('I\'m in getStreetView');
+								var panoramaOptions = {
+									position: nearStreetViewLocation,
+									pov: {
+										heading: heading,
+										pitch: 30
+									}
+								};
+								var panorama = new google.maps.StreetViewPanorama(document.getElementById('pano'), panoramaOptions);
+							} else {
+								infowindow.setContent('<div>' + marker.title + '</div>' + '<div>' + marker.position + '</div><div>No Street View Found</div>');
+							}
+						}
 
-      <section class="story-details__content js-content">
-        <div>
-          <a class="story-details__link" href="{{ url }}">Visit site</a>
-        </div>
+						streetViewService.getPanoramaByLocation(marker.position, radius, getStreetView);
+						infowindow.open(map, marker);
+					};
+				};
 
-        {{#if kids}}
-        <section class="story-details__comments js-comments">
-          <h2 class="story-details__comments-title">Comments</h2>
-        </section>
-        {{/if}}
-      </section>
-    </script>
+				document.getElementById('show-listings').addEventListener('click', showListings);
+				document.getElementById('hide-listings').addEventListener('click', hideListings);
 
-    <script id="tmpl-story-details-comment" type="text/x-handlebars-template">
-      <p class="story-details-comment__author">{{ by }}{{#if time }}, {{ formatRelative time }}{{/if }}</p>
-      <div class="story-details-comment__text">{{{ text }}}</div>
-    </script>
-    <script src="scripts/namespace.js"></script>
-    <script src="scripts/data.js"></script>
-    <script src="scripts/app.js"></script>
+				function showListings() {
+					var bounds = new google.maps.LatLngBounds();
 
-  </body>
+					markers.forEach(function(mark){
+						mark.setMap(map);
+						bounds.extend(mark.position);
+					});
+					map.fitBounds(bounds);
+				};
+
+				function hideListings() {
+					markers.forEach(function(mark){
+						mark.setMap(null);
+					});
+				};
+			}
+		</script>
+		<script async defer 
+		src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCQCMl8maoiGDKHwOu3THEN64f_nRkBRK0&v=3&callback=initMap">
+		</script>
+	</body>
 </html>
